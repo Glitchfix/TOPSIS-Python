@@ -1,102 +1,124 @@
 import numpy as np
 import warnings
-class topsis:
-	a=None #Matrix
-	w=None #Weight matrix
-	r=None #Normalisation matrix 
-	m=None #Number of rows
-	n=None #Number of columns
-	aw=[] #worst alternative
-	ab=[] #best alternative
-	diw=None
-	dib=None
-	siw=None
-	sib=None	
-	
-	#Return a numpy array with float items
-	def floater(self,a):
-		ax=[]
-		for i in a:
-			try:
-				ix=[]
-				for j in i:
-					ix.append(float(j))
-			except:
-				ix=float(i)
-				pass
-			ax.append(ix)
-		return np.array(ax)
+from scipy.stats import rankdata
 
-	def __init__(self,a,w,j):
-		self.a=self.floater(a)
-		self.m=len(a)
-		self.n=len(a[0])
-		self.w=self.floater(w)
-		print self.a
-		self.w=self.w/sum(self.w)
-		self.j=np.array(j)
-		#print self.a
-		#print self.w
-		#print self.j
 
-	#Step 2
-	def step2(self):
-		self.r=self.a
-		for i in range(self.m):
-			nm=sum(self.a[i,:]**2)**0.5
-			for j in range(self.n):
-				self.r[i,j]=self.a[i,j]/nm
-	#Step 3
-	def step3(self):
-		self.t=self.r*self.w
-	
-	#Step 4
-	def step4(self):
-		for i in range(self.n):
-			if self.j[i]==1:
-				self.aw.append(min(self.t[:,i]))
-				self.ab.append(max(self.t[:,i]))
-			else:
-				self.aw.append(max(self.t[:,i]))
-				self.ab.append(min(self.t[:,i]))
-	#Step 5			
-	def step5(self):
-		self.diw=(self.t-self.aw)**2
-		self.dib=(self.t-self.ab)**2
-		#print 'lol'
-		#print self.diw
-		"""for j in range(self.n):
-			self.diw[:,j]=(self.diw[:,j]-self.aw[j])**2
-			self.dib[:,j]=(self.dib[:,j]-self.ab[j])**2
-		print self.diw"""
-		self.dw=[]
-		self.db=[]
-		for j in range(self.m):
-			self.dw.append(sum(self.diw[j,:])**0.5)
-			self.db.append(sum(self.dib[j,:])**0.5)
-		print self.dw
-		self.dw=np.array(self.dw)
-		self.db=np.array(self.db)
-		print self.dw
-		#print self.db
+class Topsis():
+    evaluation_matrix = np.array([])  # Matrix
+    weighted_normalized = np.array([])  # Weight matrix
+    normalized_decision = np.array([])  # Normalisation matrix
+    M = 0  # Number of rows
+    N = 0  # Number of columns
 
-	#Step 6
-	def step6(self):
-		np.seterr(all='ignore')
-		self.siw=self.dw/(self.dw+self.db)
-		#print self.siw
-		x=0
-		m=None
-		for i in range(self.m):
-			print self.siw[i]
-			if self.siw[i]>m or m==None:
-				m=self.siw[i]
-				x=i
-		print 'Choice',x+1,'is the best'
-	
-	def calc(self):
-		self.step2()
-		self.step3()
-		self.step4()
-		self.step5()
-		self.step6()
+    '''
+	Create an evaluation matrix consisting of m alternatives and n criteria,
+	with the intersection of each alternative and criteria given as {\displaystyle x_{ij}}x_{ij},
+	we therefore have a matrix {\displaystyle (x_{ij})_{m\times n}}(x_{{ij}})_{{m\times n}}.
+	'''
+
+    def __init__(self, evaluation_matrix, weight_matrix, criteria):
+        # M×N matrix
+        self.evaluation_matrix = np.array(evaluation_matrix, dtype="float")
+
+        # M alternatives (options)
+        self.row_size = len(self.evaluation_matrix)
+
+        # N attributes/criteria
+        self.column_size = len(self.evaluation_matrix[0])
+
+        # N size weight matrix
+        self.weight_matrix = np.array(weight_matrix, dtype="float")
+        self.weight_matrix = self.weight_matrix/sum(self.weight_matrix)
+        self.criteria = np.array(criteria, dtype="float")
+
+    '''
+	# Step 2
+	The matrix {\displaystyle (x_{ij})_{m\times n}}(x_{{ij}})_{{m\times n}} is then normalised to form the matrix
+	'''
+
+    def step_2(self):
+        # normalized scores
+        self.normalized_decision = np.copy(self.evaluation_matrix)
+        for i in range(self.row_size):
+            sqrd_sum_sqroot = sum(self.evaluation_matrix[i, :]**2)**0.5
+            for j in range(self.column_size):
+                self.normalized_decision[i,
+                                         j] = self.evaluation_matrix[i, j]/sqrd_sum_sqroot
+
+    '''
+	# Step 3
+	Calculate the weighted normalised decision matrix
+	'''
+
+    def step_3(self):
+
+        self.weighted_normalized = self.normalized_decision*self.weight_matrix
+
+    '''
+	# Step 4
+	Determine the worst alternative {\displaystyle (A_{w})}(A_{w}) and the best alternative {\displaystyle (A_{b})}(A_{b}):
+	'''
+
+    def step_4(self):
+        self.worst_alternatives = np.zeros(self.column_size)
+        self.best_alternatives = np.zeros(self.column_size)
+        for i in range(self.column_size):
+            if self.criteria[i] > 0:
+                self.worst_alternatives[i] = min(
+                    self.weighted_normalized[:, i])
+                self.best_alternatives[i] = max(self.weighted_normalized[:, i])
+            elif self.criteria[i] < 0:
+                self.worst_alternatives[i] = max(
+                    self.weighted_normalized[:, i])
+                self.best_alternatives[i] = min(self.weighted_normalized[:, i])
+
+    '''
+	# Step 5
+	Calculate the L2-distance between the target alternative {\displaystyle i}i and the worst condition {\displaystyle A_{w}}A_{w}
+	{\displaystyle d_{iw}={\sqrt {\sum _{j=1}^{n}(t_{ij}-t_{wj})^{2}}},\quad i=1,2,\ldots ,m,}
+	and the distance between the alternative {\displaystyle i}i and the best condition {\displaystyle A_{b}}A_b
+	{\displaystyle d_{ib}={\sqrt {\sum _{j=1}^{n}(t_{ij}-t_{bj})^{2}}},\quad i=1,2,\ldots ,m}
+	where {\displaystyle d_{iw}}d_{{iw}} and {\displaystyle d_{ib}}d_{{ib}} are L2-norm distances 
+	from the target alternative {\displaystyle i}i to the worst and best conditions, respectively.
+	'''
+
+    def step_5(self):
+        self.worst_distance = np.zeros(self.row_size)
+        self.best_distance = np.zeros(self.row_size)
+
+        self.worst_distance_mat = (
+            self.weighted_normalized-self.worst_alternatives)**2
+        self.best_distance_mat = (
+            self.weighted_normalized-self.best_alternatives)**2
+
+        for j in range(self.row_size):
+            self.worst_distance[j] = sum(self.worst_distance_mat[j, :])**0.5
+            self.best_distance[j] = sum(self.best_distance_mat[j, :])**0.5
+
+    '''
+	# Step 6
+	Calculate the similarity
+	'''
+
+    def step_6(self):
+        np.seterr(all='ignore')
+        # calculate the similarity to the worst condition
+        self.worst_similarity = self.worst_distance / \
+            (self.worst_distance+self.best_distance)
+
+        # calculate the similarity to the best condition
+        self.best_similarity = self.best_distance / \
+            (self.worst_distance+self.best_distance)
+
+    def rank_to_worst_similarity(self):
+        return rankdata(self.worst_similarity).astype(int)
+
+    def rank_to_best_similarity(self):
+        return rankdata(self.best_similarity, method='min').astype(int)
+
+    def calc(self):
+        self.step_2()
+        self.step_3()
+        self.step_4()
+        self.step_5()
+        self.step_6()
