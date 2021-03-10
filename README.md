@@ -27,8 +27,16 @@ t = Topsis(evaluation_matrix, weights, criterias)
 
 t.calc()
 
+print(t.best_distance)
+print(t.worst_distance)
+
+
+print(t.worst_similarity)
 print(t.rank_to_worst_similarity())
+
+print(t.best_similarity)
 print(t.rank_to_best_similarity())
+
 
 ```
 
