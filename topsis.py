@@ -39,14 +39,14 @@ class Topsis():
     def step_2(self):
         # normalized scores
         self.normalized_decision = np.copy(self.evaluation_matrix)
+        sqrd_sum = np.zeros(self.column_size)
         for i in range(self.row_size):
-            sqrd_sum = 0
             for j in range(self.column_size):
-                sqrd_sum = self.evaluation_matrix[i, j]**2
-            sqrd_sum_sqroot = sqrd_sum**0.5
+                sqrd_sum[j] += self.evaluation_matrix[i, j]**2
+        for i in range(self.row_size):
             for j in range(self.column_size):
                 self.normalized_decision[i,
-                                         j] = self.evaluation_matrix[i, j]/sqrd_sum_sqroot
+                                         j] = self.evaluation_matrix[i, j]/(sqrd_sum[j]**0.5)
 
     '''
 	# Step 3
@@ -54,8 +54,11 @@ class Topsis():
 	'''
 
     def step_3(self):
-
-        self.weighted_normalized = self.normalized_decision*self.weight_matrix
+        from pdb import set_trace
+        self.weighted_normalized = np.copy(self.normalized_decision)
+        for i in range(self.row_size):
+            for j in range(self.column_size):
+                self.weighted_normalized[i,j] *= self.weight_matrix[j]
 
     '''
 	# Step 4
@@ -66,7 +69,7 @@ class Topsis():
         self.worst_alternatives = np.zeros(self.column_size)
         self.best_alternatives = np.zeros(self.column_size)
         for i in range(self.column_size):
-            if self.criteria[i] > 0:
+            if self.criteria[i] >= 0:
                 self.worst_alternatives[i] = min(
                     self.weighted_normalized[:, i])
                 self.best_alternatives[i] = max(self.weighted_normalized[:, i])
