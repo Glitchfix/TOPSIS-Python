@@ -40,7 +40,10 @@ class Topsis():
         # normalized scores
         self.normalized_decision = np.copy(self.evaluation_matrix)
         for i in range(self.row_size):
-            sqrd_sum_sqroot = sum(self.evaluation_matrix[i, :]**2)**0.5
+            sqrd_sum = 0
+            for j in range(self.column_size):
+                sqrd_sum = self.evaluation_matrix[i, j]**2
+            sqrd_sum_sqroot = sqrd_sum**0.5
             for j in range(self.column_size):
                 self.normalized_decision[i,
                                          j] = self.evaluation_matrix[i, j]/sqrd_sum_sqroot
