@@ -133,10 +133,8 @@ class Topsis():
         self.step_3()
         print("Step 3\n", self.weighted_normalized, end="\n\n")
         self.step_4()
-        print("Step 4\n", self.worst_alternatives,
-              self.best_alternatives, end="\n\n")
+        print("Step 4\n", self.worst_alternatives, self.best_alternatives, end="\n\n")
         self.step_5()
         print("Step 5\n", self.worst_distance, self.best_distance, end="\n\n")
         self.step_6()
-        print("Step 6\n", self.worst_similarity,
-              self.best_simworst_similarity, end="\n\n")
+        print("Step 6\n", self.worst_similarity, self.best_similarity, end="\n\n")
