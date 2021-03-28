@@ -127,8 +127,16 @@ class Topsis():
         return rankdata(self.best_similarity, method='min').astype(int)
 
     def calc(self):
+        print("Step 1\n", self.evaluation_matrix, end="\n\n")
         self.step_2()
+        print("Step 2\n", self.normalized_decision, end="\n\n")
         self.step_3()
+        print("Step 3\n", self.weighted_normalized, end="\n\n")
         self.step_4()
+        print("Step 4\n", self.worst_alternatives,
+              self.best_alternatives, end="\n\n")
         self.step_5()
+        print("Step 5\n", self.worst_distance, self.best_distance, end="\n\n")
         self.step_6()
+        print("Step 6\n", self.worst_similarity,
+              self.best_simworst_similarity, end="\n\n")
