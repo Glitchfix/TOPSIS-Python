@@ -58,7 +58,7 @@ class Topsis():
         self.weighted_normalized = np.copy(self.normalized_decision)
         for i in range(self.row_size):
             for j in range(self.column_size):
-                self.weighted_normalized[i,j] *= self.weight_matrix[j]
+                self.weighted_normalized[i, j] *= self.weight_matrix[j]
 
     '''
 	# Step 4
@@ -104,17 +104,21 @@ class Topsis():
     '''
 	# Step 6
 	Calculate the similarity
-	''' 
+	'''
 
     def step_6(self):
         np.seterr(all='ignore')
-        # calculate the similarity to the worst condition
-        self.worst_similarity = self.worst_distance / \
-            (self.worst_distance+self.best_distance)
+        self.worst_similarity = np.zeros(self.row_size)
+        self.best_similarity = np.zeros(self.row_size)
 
-        # calculate the similarity to the best condition
-        self.best_similarity = self.best_distance / \
-            (self.worst_distance+self.best_distance)
+        for i in range(self.row_size):
+            # calculate the similarity to the worst condition
+            self.worst_similarity[i] = self.worst_distance[i] / \
+                (self.worst_distance[i]+self.best_distance[i])
+
+            # calculate the similarity to the best condition
+            self.best_similarity[i] = self.best_distance[i] / \
+                (self.worst_distance[i]+self.best_distance[i])
 
     def rank_to_worst_similarity(self):
         return rankdata(self.worst_similarity).astype(int)
