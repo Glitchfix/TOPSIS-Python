@@ -9,8 +9,11 @@ evaluation_matrix = np.array([
 
 weights = [5, 5, 9, 0]
 
-criterias = np.array([1, 1, 0, 0])
-# np.ones(7) -> [1, 1, 1, 1]
+'''
+if higher value is preferred - True
+if lower value is preferred - False
+'''
+criterias = np.array([True, True, False, False])
 
 t = Topsis(evaluation_matrix, weights, criterias)
 

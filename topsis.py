@@ -69,11 +69,11 @@ class Topsis():
         self.worst_alternatives = np.zeros(self.column_size)
         self.best_alternatives = np.zeros(self.column_size)
         for i in range(self.column_size):
-            if self.criteria[i] >= 0:
+            if self.criteria[i]:
                 self.worst_alternatives[i] = min(
                     self.weighted_normalized[:, i])
                 self.best_alternatives[i] = max(self.weighted_normalized[:, i])
-            elif self.criteria[i] < 0:
+            else:
                 self.worst_alternatives[i] = max(
                     self.weighted_normalized[:, i])
                 self.best_alternatives[i] = min(self.weighted_normalized[:, i])
@@ -104,7 +104,7 @@ class Topsis():
     '''
 	# Step 6
 	Calculate the similarity
-	'''
+	''' 
 
     def step_6(self):
         np.seterr(all='ignore')

@@ -21,8 +21,12 @@ evaluation_matrix = np.array([
 
 weights = [5, 5, 9, 0]
 
-criterias = np.array([1, 1, 0, 0])
-# np.ones(7) -> [1, 1, 1, 1]
+'''
+if higher value is preferred - True
+if lower value is preferred - False
+'''
+criterias = np.array([True, True, False, False])
+
 
 t = Topsis(evaluation_matrix, weights, criterias)
 
@@ -42,8 +46,12 @@ print("rank_to_best_similarity\t", t.rank_to_best_similarity())
 ```
 
 ```sh
-[2 1 3]
-[2 3 1]
+best_distance    [0.19318032 0.         0.11341289]
+worst_distance   [0.         0.19318032 0.11748186]
+worst_similarity         [0.         1.         0.50881131]
+rank_to_worst_similarity         [1 3 2]
+best_similarity  [1.         0.         0.49118869]
+rank_to_best_similarity  [3 1 2]
 ```
 
 ##### Resources: 
