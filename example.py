@@ -13,7 +13,7 @@ weights = [5, 5, 9, 0]
 if higher value is preferred - True
 if lower value is preferred - False
 '''
-criterias = np.array([True, True, False, False])
+criterias = np.array([True, True, True, True])
 
 t = Topsis(evaluation_matrix, weights, criterias)
 

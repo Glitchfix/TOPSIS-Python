@@ -25,8 +25,7 @@ weights = [5, 5, 9, 0]
 if higher value is preferred - True
 if lower value is preferred - False
 '''
-criterias = np.array([True, True, False, False])
-
+criterias = np.array([True, True, True, True])
 
 t = Topsis(evaluation_matrix, weights, criterias)
 
@@ -46,12 +45,40 @@ print("rank_to_best_similarity\t", t.rank_to_best_similarity())
 ```
 
 ```sh
-best_distance    [0.19318032 0.         0.11341289]
-worst_distance   [0.         0.19318032 0.11748186]
-worst_similarity         [0.         1.         0.50881131]
-rank_to_worst_similarity         [1 3 2]
-best_similarity  [1.         0.         0.49118869]
-rank_to_best_similarity  [3 1 2]
+\~ python3 example.py
+Step 1
+ [[1. 2. 3. 4.]
+ [4. 3. 2. 1.]
+ [3. 3. 3. 3.]]
+
+Step 2
+ [[0.19611614 0.42640143 0.63960215 0.78446454]
+ [0.78446454 0.63960215 0.42640143 0.19611614]
+ [0.58834841 0.63960215 0.63960215 0.58834841]]
+
+Step 3
+ [[0.05160951 0.1122109  0.30296944 0.        ]
+ [0.20643804 0.16831636 0.20197963 0.        ]
+ [0.15482853 0.16831636 0.30296944 0.        ]]
+
+Step 4
+ [0.05160951 0.1122109  0.20197963 0.        ] [0.20643804 0.16831636 0.30296944 0.        ]
+
+[[0.05160951 0.1122109  0.30296944 0.        ]
+ [0.20643804 0.16831636 0.20197963 0.        ]
+ [0.15482853 0.16831636 0.30296944 0.        ]]
+Step 5
+ [0.10098981 0.16468058 0.15492233] [0.16468058 0.10098981 0.05160951]
+
+Step 6
+ [0.38013198 0.61986802 0.75011355] [0.61986802 0.38013198 0.24988645]
+
+best_distance    [0.16468058 0.10098981 0.05160951]
+worst_distance   [0.10098981 0.16468058 0.15492233]
+worst_similarity         [0.38013198 0.61986802 0.75011355]
+rank_to_worst_similarity         [1 2 3]
+best_similarity  [0.61986802 0.38013198 0.24988645]
+rank_to_best_similarity  [3 2 1]
 ```
 
 ##### Resources: 

@@ -92,14 +92,20 @@ class Topsis():
         self.worst_distance = np.zeros(self.row_size)
         self.best_distance = np.zeros(self.row_size)
 
-        self.worst_distance_mat = (
-            self.weighted_normalized-self.worst_alternatives)**2
-        self.best_distance_mat = (
-            self.weighted_normalized-self.best_alternatives)**2
+        self.worst_distance_mat = np.copy(self.weighted_normalized)
+        self.best_distance_mat = np.copy(self.weighted_normalized)
 
-        for j in range(self.row_size):
-            self.worst_distance[j] = sum(self.worst_distance_mat[j, :])**0.5
-            self.best_distance[j] = sum(self.best_distance_mat[j, :])**0.5
+        for i in range(self.row_size):
+            for j in range(self.column_size):
+                self.worst_distance_mat[i][j] = (self.weighted_normalized[i][j]-self.worst_alternatives[j])**2
+                self.best_distance_mat[i][j] = (self.weighted_normalized[i][j]-self.best_alternatives[j])**2
+                
+                self.worst_distance[i] += self.worst_distance_mat[i][j]
+                self.best_distance[i] += self.best_distance_mat[i][j]
+
+        for i in range(self.row_size):
+            self.worst_distance[i] = self.worst_distance[i]**0.5
+            self.best_distance[i] = self.best_distance[i]**0.5
 
     '''
 	# Step 6
