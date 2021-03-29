@@ -127,7 +127,7 @@ class Topsis():
                 (self.worst_distance[i]+self.best_distance[i])
 
     def rank_to_worst_similarity(self):
-        return rankdata(self.worst_similarity).astype(int)
+        return rankdata(self.worst_similarity, method="min").astype(int)
 
     def rank_to_best_similarity(self):
         return rankdata(self.best_similarity, method='min').astype(int)
