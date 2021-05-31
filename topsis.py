@@ -1,6 +1,5 @@
 import numpy as np
 import warnings
-from scipy.stats import rankdata
 
 
 class Topsis():
@@ -125,12 +124,17 @@ class Topsis():
             # calculate the similarity to the best condition
             self.best_similarity[i] = self.best_distance[i] / \
                 (self.worst_distance[i]+self.best_distance[i])
+    
+    def ranking(self, data):
+        return [i+1 for i in data.argsort()]
 
     def rank_to_worst_similarity(self):
-        return rankdata(self.worst_similarity, method="min").astype(int)
+        # return rankdata(self.worst_similarity, method="min").astype(int)
+        return self.ranking(self.worst_similarity)
 
     def rank_to_best_similarity(self):
-        return rankdata(self.best_similarity, method='min').astype(int)
+        # return rankdata(self.best_similarity, method='min').astype(int)
+        return self.ranking(self.best_similarity)
 
     def calc(self):
         print("Step 1\n", self.evaluation_matrix, end="\n\n")
@@ -139,8 +143,10 @@ class Topsis():
         self.step_3()
         print("Step 3\n", self.weighted_normalized, end="\n\n")
         self.step_4()
-        print("Step 4\n", self.worst_alternatives, self.best_alternatives, end="\n\n")
+        print("Step 4\n", self.worst_alternatives,
+              self.best_alternatives, end="\n\n")
         self.step_5()
         print("Step 5\n", self.worst_distance, self.best_distance, end="\n\n")
         self.step_6()
-        print("Step 6\n", self.worst_similarity, self.best_similarity, end="\n\n")
+        print("Step 6\n", self.worst_similarity,
+              self.best_similarity, end="\n\n")
