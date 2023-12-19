@@ -127,7 +127,7 @@ class Topsis():
     
     def ranking(self, data):
         temp = np.flip(data.argsort())
-        ranks = np.arange(len(data))[temp.argsort()]
+        ranks = [i+1 for i in np.arange(len(data))[temp.argsort()]]
         return ranks
 
     def rank_to_worst_similarity(self):
