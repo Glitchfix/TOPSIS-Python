@@ -126,7 +126,9 @@ class Topsis():
                 (self.worst_distance[i]+self.best_distance[i])
     
     def ranking(self, data):
-        return [i+1 for i in data.argsort()]
+        temp = np.flip(data.argsort())
+        ranks = [i+1 for i in np.arange(len(data))[temp.argsort()]]
+        return ranks
 
     def rank_to_worst_similarity(self):
         # return rankdata(self.worst_similarity, method="min").astype(int)
